@@ -14,13 +14,13 @@ script:
 - "./hugo"
 
 before_deploy:
-  - mv public/ demo-site-$TRAVIS_TAG/
-  - tar -czvf demo-site-$TRAVIS_TAG.tar.gz demo-site
+  - mv public/ demo-site-$TRAVIS_BRANCH/
+  - tar -czvf demo-site-$TRAVIS_BRANCH.tar.gz demo-site
 
 deploy:
   provider: releases
   api_key: $GITHUB_TOKEN
-  file: demo-site-$TRAVIS_TAG.tar.gz
+  file: demo-site-$TRAVIS_BRANCH.tar.gz
   skip_cleanup: true
   on:
     tags: true
