@@ -15,7 +15,7 @@ script:
 
 before_deploy:
   - mv public/ demo-site-$TRAVIS_TAG/
-  - tar -czvf demo-site$-TRAVIS_TAG.tar.gz demo-site
+  - tar -czvf demo-site$-$TRAVIS_TAG.tar.gz demo-site
 
 deploy:
   provider: releases
