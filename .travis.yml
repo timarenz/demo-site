@@ -8,7 +8,7 @@ env:
 install:
   - wget https://github.com/gohugoio/hugo/releases/download/v0.49/hugo_0.49_Linux-64bit.tar.gz -O /tmp/hugo.tar.gz
   - tar xzf /tmp/hugo.tar.gz
-  - export PATH=$PATH=PWD/hugo
+  - ls -al && pwd
 
 script:
   - hugo
