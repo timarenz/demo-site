@@ -1,7 +1,7 @@
 language: minimal
 
-global:
-  env:
+env:
+  global:
     - HUGO_VERSION=0.49
     - HUGO_BINARY=hugo_${HUGO_VERSION}_Linux-64bit.tar.gz
 
