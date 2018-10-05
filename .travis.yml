@@ -1,30 +1,45 @@
 language: minimal
 
+sudo: required
+
+services:
+  - docker
+
 env:
   global:
   - HUGO_VERSION=0.49
   - HUGO_BINARY=hugo_$HUGO_VERSION_Linux-64bit.tar.gz
 
-install:
-  - wget https://github.com/gohugoio/hugo/releases/download/v0.49/hugo_0.49_Linux-64bit.tar.gz
-    -O /tmp/hugo.tar.gz
-  - tar -xzvf /tmp/hugo.tar.gz
-
-script:
-  - "./hugo"
-
-after_script:
-  - 'mv public/ demo-site-${TRAVIS_BRANCH}/'
-  - 'tar -czvf demo-site-${TRAVIS_BRANCH}.tar.gz demo-site-${TRAVIS_BRANCH}'
-
-before_deploy:
-  - mv public/ demo-site-${TRAVIS_BRANCH}/
-  - tar -czvf demo-site-${TRAVIS_BRANCH}.tar.gz demo-site-${TRAVIS_BRANCH}
-
-deploy:
-  provider: releases
-  api_key: ${GITHUB_TOKEN}
-  file: ' demo-site-${TRAVIS_BRANCH}.tar.gz'
-  skip_cleanup: true
-  on:
-    tags: true
+jobs:
+  include:
+    - stage: generate site
+      install:
+        - wget https://github.com/gohugoio/hugo/releases/download/v0.49/hugo_0.49_Linux-64bit.tar.gz
+          -O /tmp/hugo.tar.gz
+        - tar -xzvf /tmp/hugo.tar.gz
+      script:
+        - "./hugo"
+    - stage: build docker image
+      install: 
+        - docker build -t timarenz/demo-site:${TRAVIS_BRANCH} .
+    - stage: deploy to docker hub
+      before_deploy:
+        - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+        - docker tag timarenz/demo-site:${TRAVIS_BRANCH} timarenz/demo-site:latest
+      deploy:
+      provider: script
+      script: ocker push USER/REPO
+      skip_cleanup: true
+      on:
+        tags: true
+    - stage: deploy to github
+      before_deploy:
+        - mv public/ demo-site-${TRAVIS_BRANCH}/
+        - tar -czvf demo-site-${TRAVIS_BRANCH}.tar.gz demo-site-${TRAVIS_BRANCH}
+      deploy:
+        provider: releases
+        api_key: ${GITHUB_TOKEN}
+        file: 'demo-site-${TRAVIS_BRANCH}.tar.gz'
+        skip_cleanup: true
+        on:
+          tags: true
