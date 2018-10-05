@@ -10,11 +10,11 @@ install:
   - tar -xzvf /tmp/hugo.tar.gz
 
 script:
-  - "./hugo"
+  - ./hugo
   - docker build -t timarenz/demo-site:${TRAVIS_BRANCH} .
 
 before_deploy:
-  - mv public/ demo-site-${TRAVIS_BRANCH}/
+  - mv public demo-site-${TRAVIS_BRANCH}
   - tar -czvf demo-site-${TRAVIS_BRANCH}.tar.gz demo-site-${TRAVIS_BRANCH}
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
   - docker tag timarenz/demo-site:${TRAVIS_BRANCH} timarenz/demo-site:latest
@@ -22,12 +22,12 @@ before_deploy:
 deploy:
   - provider: releases
     api_key: ${GITHUB_TOKEN}
-    file: 'demo-site-${TRAVIS_BRANCH}.tar.gz'
+    file: demo-site-${TRAVIS_BRANCH}.tar.gz
     skip_cleanup: true
     on:
       tags: true
   - provider: script
-    script: docker push USER/REPO
+    script: docker push timarenz/demo-site
     skip_cleanup: true
     on:
       tags: true
