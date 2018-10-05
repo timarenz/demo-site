@@ -2,12 +2,26 @@ language: minimal
 
 env:
   global:
-    - HUGO_VERSION=0.49
-    - HUGO_BINARY=hugo_$HUGO_VERSION_Linux-64bit.tar.gz
+  - HUGO_VERSION=0.49
+  - HUGO_BINARY=hugo_$HUGO_VERSION_Linux-64bit.tar.gz
 
 install:
-  - wget https://github.com/gohugoio/hugo/releases/download/v0.49/hugo_0.49_Linux-64bit.tar.gz -O /tmp/hugo.tar.gz
-  - tar -xzvf /tmp/hugo.tar.gz
+- wget https://github.com/gohugoio/hugo/releases/download/v0.49/hugo_0.49_Linux-64bit.tar.gz
+  -O /tmp/hugo.tar.gz
+- tar -xzvf /tmp/hugo.tar.gz
 
 script:
-  - ./hugo
+- "./hugo"
+
+before_deploy:
+  - git config --local user.name "Tim Arenz"
+  - git config --local user.email "tim@arenz.cc"
+  - git tag "$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)"
+  - mv public/ demo-site/
+  - tar -czvf demo-site.tar.gz demo-site
+
+deploy:
+  provider: releases
+  skip_cleanup: true
+  api_key: $GITHUB_TOKEN
+  file: demo-site.tar.gz
