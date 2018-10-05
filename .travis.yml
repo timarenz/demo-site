@@ -15,15 +15,15 @@ script:
 
 after_script:
   - 'mv public/ demo-site-${TRAVIS_BRANCH}/'
-  - 'tar -czvf demo-site-${TRAVIS_BRANCH}.tar.gz demo-site'
+  - 'tar -czvf demo-site-${TRAVIS_BRANCH}.tar.gz demo-site-${TRAVIS_BRANCH}'
 
 before_deploy:
-  - 'mv public/ demo-site-${TRAVIS_BRANCH}/'
-  - 'tar -czvf demo-site-${TRAVIS_BRANCH}.tar.gz demo-site'
+  - mv public/ demo-site-${TRAVIS_BRANCH}/
+  - tar -czvf demo-site-${TRAVIS_BRANCH}.tar.gz demo-site-${TRAVIS_BRANCH}
 
 deploy:
   provider: releases
-  api_key: $GITHUB_TOKEN
+  api_key: ${GITHUB_TOKEN}
   file: ' demo-site-${TRAVIS_BRANCH}.tar.gz'
   skip_cleanup: true
   on:
