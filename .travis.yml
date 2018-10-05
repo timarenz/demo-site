@@ -14,14 +14,13 @@ script:
 - "./hugo"
 
 before_deploy:
-  - git config --local user.name "Tim Arenz"
-  - git config --local user.email "tim@arenz.cc"
-  - git tag "$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)"
-  - mv public/ demo-site/
-  - tar -czvf demo-site.tar.gz demo-site
+  - mv public/ demo-site-$TRAVIS_TAG/
+  - tar -czvf demo-site$-TRAVIS_TAG.tar.gz demo-site
 
 deploy:
   provider: releases
-  skip_cleanup: true
   api_key: $GITHUB_TOKEN
-  file: demo-site.tar.gz
+  file: demo-site-$TRAVIS_TAG.tar.gz
+  skip_cleanup: true
+  on:
+    tags: true
