@@ -1,0 +1,13 @@
+language: minimal
+
+env:
+  - HUGO_VERSION=0.49
+  - HUGO_BINARY=hugo_${HUGO_VERSION}_Linux-64bit.tar.gz
+
+install:
+  - wget https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/${HUGO_BINARY}
+  - tar xzf ${HUGO_BINARY}
+  - mv hugo /usr/local/bin
+
+script:
+  - /usr/local/bin/hugo
