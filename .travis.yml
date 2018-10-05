@@ -23,8 +23,9 @@ before_deploy:
 
 deploy:
   - provider: pages
-    github-token: ${GITHUB_TOKEN}
+    local-dir: demo-site-${TRAVIS_BRANCH}
     fqdn: demo-site.arenz.io
+    github-token: ${GITHUB_TOKEN}
     skip-cleanup: true
     keep-history: true
     on:
