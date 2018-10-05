@@ -13,8 +13,10 @@ script:
   - ./hugo
   - docker build -t timarenz/demo-site:${TRAVIS_BRANCH} .
 
-before_deploy:
+after_success:
   - mv public demo-site-${TRAVIS_BRANCH}
+
+before_deploy:
   - tar -czvf demo-site-${TRAVIS_BRANCH}.tar.gz demo-site-${TRAVIS_BRANCH}
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
   - docker tag timarenz/demo-site:${TRAVIS_BRANCH} timarenz/demo-site:latest
